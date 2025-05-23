@@ -5,20 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MBTI 궁합 분석 앱</title>
   <style>
-    body { font-family: 'Jua', Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; text-align: center; }
+    body { font-family: 'Jua', Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; text-align: center; background: #fcfcfa; }
     select, button { padding: 12px; font-size: 1.1rem; margin: 10px; border-radius: 8px; border: 2px solid #7e57c2; }
     .result { background: #f3e5f5; border-radius: 12px; padding: 20px; margin-top: 30px; text-align: left; }
     h3 { color: #5e35b1; }
     ul { margin-bottom: 0; }
-    .bar-container { background: #ede7f6; border-radius: 8px; margin: 24px 0 16px 0; height: 32px; width: 100%; max-width: 350px; display: flex; align-items: center; }
+    .bar-container { background: #ede7f6; border-radius: 8px; margin: 24px 0 16px 0; height: 36px; width: 100%; max-width: 400px; display: flex; align-items: center; }
     .bar { background: #7e57c2; height: 100%; border-radius: 8px 0 0 8px; transition: width 0.7s; }
-    .score-label { position: absolute; font-size: 1.2rem; color: #5e35b1; font-weight: bold; margin-left: 10px; }
+    .score-label { position: absolute; font-size: 1.2rem; color: #222; font-weight: bold; margin-left: 10px; }
     .bar-wrap { position: relative; display: inline-block; width: 100%; }
+    .score-label { left: 80%; top: 7px; position: absolute; }
+    @media (max-width: 600px) {
+      .bar-container { max-width: 95vw; }
+    }
   </style>
 </head>
 <body>
   <h1>🔮 MBTI 궁합 분석 앱</h1>
-  <p>나와 상대방의 MBTI를 선택하면<br>성향 유사도와 주요 차이점을 분석해드려요!</p>
+  <p>나와 상대방의 MBTI를 선택하면<br>성향 유사도와 주요 포인트를 분석해드려요!</p>
   
   <div>
     <select id="myMbti">
@@ -66,77 +70,93 @@
   <div class="result" id="result"></div>
 
   <script>
-    // MBTI 차원별 행동/선호 예시
-    const prefer = {
-      E: ["함께 어울리는 활동", "즉각적인 반응", "활발한 대화"],
-      I: ["조용한 분위기", "혼자만의 시간", "깊은 대화"],
-      S: ["구체적인 칭찬", "실생활 이야기", "약속 잘 지키기"],
-      N: ["미래 이야기", "아이디어 나누기", "상상력 자극 대화"],
-      T: ["논리적 설명", "솔직한 피드백", "문제 해결 제안"],
-      F: ["공감해주기", "감정 표현", "따뜻한 말 한마디"],
-      J: ["계획 세우기", "정해진 약속 지키기", "시간 약속"],
-      P: ["즉흥 제안", "유연한 태도", "새로운 경험"]
+    // 차원별 좋아하는 것
+    const like_examples = {
+      'E': ['함께 어울리는 활동', '적극적으로 먼저 연락하기', '즉각적인 반응'],
+      'I': ['조용한 분위기에서 대화', '혼자만의 시간 존중', '생각할 시간 주기'],
+      'S': ['구체적인 칭찬', '실생활 이야기', '약속 잘 지키기'],
+      'N': ['미래에 대한 이야기', '아이디어 나누기', '상상력 자극하는 대화'],
+      'T': ['논리적으로 설명하기', '솔직한 피드백', '문제 해결 제안'],
+      'F': ['공감해주기', '감정 표현하기', '따뜻한 말 한마디'],
+      'J': ['계획 세우기', '정해진 약속 지키기', '시간 약속'],
+      'P': ['즉흥적인 제안', '유연한 태도', '새로운 경험 시도']
     };
 
-    // 차원별 싫어하는 것 예시
-    const dislike = {
-      E: ["혼자만의 시간 방해", "무관심한 태도", "답장 늦게 하기"],
-      I: ["지나친 관심 표현", "계속된 연락", "사생활 침해"],
-      S: ["막연한 이야기", "계획 없는 행동", "약속 어기기"],
-      N: ["지나치게 현실적인 이야기", "상상력 무시", "새로운 시도 거부"],
-      T: ["감정적으로 따지기", "비논리적 주장", "돌려 말하기"],
-      F: ["무뚝뚝한 말투", "공감 없는 반응", "비판적인 태도"],
-      J: ["계획 없는 행동", "즉흥 약속", "일정 자주 변경"],
-      P: ["지나치게 통제하기", "계획 강요", "즉흥성 무시"]
+    // 데이트 장소 추천
+    const place_examples = {
+      'ISTJ': ['조용한 카페', '고즈넉한 공원', '전시회'],
+      'ISFJ': ['아늑한 레스토랑', '산책길', '작은 영화관'],
+      'INFJ': ['북카페', '미술관', '자연 속 산책'],
+      'INTJ': ['조용한 서점', '전시회', '프라이빗 다이닝룸'],
+      'ISTP': ['보드게임 카페', '스포츠 경기장', 'DIY 체험장'],
+      'ISFP': ['자연 경관 좋은 곳', '공예 체험', '갤러리'],
+      'INFP': ['테마가 있는 카페', '작은 공연장', '야외 피크닉'],
+      'INTP': ['북카페', '과학관', '전시회'],
+      'ESTP': ['액티비티 체험', '실내 스포츠', '테마파크'],
+      'ESFP': ['라이브 카페', '놀이공원', '음악 페스티벌'],
+      'ENFP': ['이색 카페', '플리마켓', '거리 공연'],
+      'ENTP': ['토론 모임', '퀴즈카페', '방탈출 카페'],
+      'ESTJ': ['깔끔한 레스토랑', '전통시장 투어', '클래식 공연'],
+      'ESFJ': ['분위기 좋은 레스토랑', '카페 데이트', '도심 산책'],
+      'ENFJ': ['봉사활동', '문화 행사', '아트 클래스'],
+      'ENTJ': ['고급 레스토랑', '비즈니스 라운지', '컨퍼런스']
     };
 
-    // MBTI 4글자별 차원 배열
-    const mbtiDims = ["E/I", "S/N", "T/F", "J/P"];
+    // 조합별 주의점 (나의 MBTI와 상대방 MBTI를 함께 고려)
+    function getCautionByCombination(my, other) {
+      const tips = [];
+      // E/I
+      if (my[0] === 'E' && other[0] === 'I') {
+        tips.push('즉흥적으로 연락하거나 지나치게 자주 만남을 제안하면, 상대가 부담스러워할 수 있어요.');
+      }
+      if (my[0] === 'I' && other[0] === 'E') {
+        tips.push('상대가 활발하게 대화할 때 너무 소극적으로 반응하면, 거리감이 느껴질 수 있어요.');
+      }
+      // S/N
+      if (my[1] === 'N' && other[1] === 'S') {
+        tips.push('추상적이거나 미래지향적인 이야기만 하면, 상대가 답답하게 느낄 수 있어요. 현실적인 대화도 섞어보세요.');
+      }
+      if (my[1] === 'S' && other[1] === 'N') {
+        tips.push('지나치게 현실적인 이야기만 하면, 상대가 지루하게 느낄 수 있어요. 상상력 있는 대화도 시도해보세요.');
+      }
+      // T/F
+      if (my[2] === 'T' && other[2] === 'F') {
+        tips.push('논리적인 설명만 강조하면, 상대가 감정이 무시된다고 느낄 수 있어요. 공감 표현을 잊지 마세요.');
+      }
+      if (my[2] === 'F' && other[2] === 'T') {
+        tips.push('감정적으로 호소하면, 상대가 비논리적이라고 느낄 수 있어요. 근거도 함께 제시해보세요.');
+      }
+      // J/P
+      if (my[3] === 'P' && other[3] === 'J') {
+        tips.push('계획 없이 약속을 자주 바꾸면, 상대가 불안해하거나 불쾌할 수 있어요. 시간을 잘 지켜주세요.');
+      }
+      if (my[3] === 'J' && other[3] === 'P') {
+        tips.push('너무 계획적으로 통제하려 하면, 상대가 답답해할 수 있어요. 즉흥적인 제안도 존중해보세요.');
+      }
+      // 특수 조합 예시
+      const specialCases = {
+        'ENFP_INFJ': '즉흥적인 행동이 상대에게 부담이 될 수 있으니, 중요한 약속은 미리 상의하세요.',
+        'ISTJ_ESFP': '상대방의 자유로운 성향을 너무 통제하려 들지 마세요.'
+      };
+      const key = `${my}_${other}`;
+      if (specialCases[key]) tips.push(specialCases[key]);
+      return tips.length > 0 ? tips : ['상대방의 성향을 존중하는 태도가 중요해요.'];
+    }
 
-    function getSimilarity(my, other) {
+    function calculate_similarity(mbti1, mbti2) {
       let same = 0;
       for (let i = 0; i < 4; i++) {
-        if (my[i] === other[i]) same++;
+        if (mbti1[i] === mbti2[i]) same++;
       }
       return Math.round((same / 4) * 100);
     }
 
-    function getBothLike(my, other) {
-      // 둘 다 같은 차원일 때의 선호 행동
-      let both = [];
+    function getLikeList(mbti) {
+      let arr = [];
       for (let i = 0; i < 4; i++) {
-        if (my[i] === other[i]) {
-          both = both.concat(prefer[my[i]]);
-        }
+        arr = arr.concat(like_examples[mbti[i]]);
       }
-      // 중복 제거
-      return [...new Set(both)];
-    }
-
-    function getMyWantOtherDislike(my, other) {
-      // 내가 좋아하는데, 상대는 싫어하는 것
-      let result = [];
-      for (let i = 0; i < 4; i++) {
-        prefer[my[i]].forEach(item => {
-          if (dislike[other[i]].includes(item)) {
-            result.push(item);
-          }
-        });
-      }
-      return [...new Set(result)];
-    }
-
-    function getOtherWantMyDislike(my, other) {
-      // 상대가 좋아하는데, 나는 싫어하는 것
-      let result = [];
-      for (let i = 0; i < 4; i++) {
-        prefer[other[i]].forEach(item => {
-          if (dislike[my[i]].includes(item)) {
-            result.push(item);
-          }
-        });
-      }
-      return [...new Set(result)];
+      return [...new Set(arr)];
     }
 
     function generateAdvice() {
@@ -149,19 +169,19 @@
         return;
       }
 
-      // 1. 유사도 계산
-      const similarity = getSimilarity(my, other);
+      // 1. 성향 유사도
+      const similarity = calculate_similarity(my, other);
 
-      // 2. 내가 하고싶지만 상대가 싫어하는 것
-      const myWantOtherDislike = getMyWantOtherDislike(my, other);
+      // 2. 상대방이 좋아하는 것
+      const otherLike = getLikeList(other);
 
-      // 3. 상대가 좋아하지만 나는 내켜하지 않는 것
-      const otherWantMyDislike = getOtherWantMyDislike(my, other);
+      // 3. 내가 주의해야 할 점 (조합별)
+      const cautions = getCautionByCombination(my, other);
 
-      // 4. 둘 다 좋아할 가능성이 큰 것
-      const bothLike = getBothLike(my, other);
+      // 4. 추천 데이트 장소
+      const places = place_examples[other] || ['추천 장소가 없습니다'];
 
-      // 5. 그래프 그리기
+      // 5. 결과 출력
       let html = `<h2>${my} ❤️ ${other} 궁합 분석</h2>`;
       html += `
         <h3>성향 유사도</h3>
@@ -169,36 +189,21 @@
           <div class="bar-container">
             <div class="bar" style="width:${similarity}%;"></div>
           </div>
-          <span class="score-label">${similarity}점 / 100점</span>
+          <span class="score-label">${similarity}%</span>
         </div>
       `;
 
-      html += '<h3>😅 내가 하고싶어 하지만 상대방이 싫어할 수 있는 것</h3>';
-      if (myWantOtherDislike.length > 0) {
-        html += '<ul>';
-        myWantOtherDislike.forEach(item => html += `<li>${item}</li>`);
-        html += '</ul>';
-      } else {
-        html += '<p>특별히 해당되는 행동이 없어요!</p>';
-      }
+      html += '<h3>😊 상대방이 좋아하는 것</h3><ul>';
+      otherLike.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul>';
 
-      html += '<h3>🤔 상대방이 좋아하지만 나는 내켜하지 않을 수 있는 것</h3>';
-      if (otherWantMyDislike.length > 0) {
-        html += '<ul>';
-        otherWantMyDislike.forEach(item => html += `<li>${item}</li>`);
-        html += '</ul>';
-      } else {
-        html += '<p>특별히 해당되는 행동이 없어요!</p>';
-      }
+      html += '<h3>⚠️ 내가 이 관계에서 주의해야 하는 것</h3><ul>';
+      cautions.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul>';
 
-      html += '<h3>😊 둘 다 좋아할 가능성이 큰 것</h3>';
-      if (bothLike.length > 0) {
-        html += '<ul>';
-        bothLike.forEach(item => html += `<li>${item}</li>`);
-        html += '</ul>';
-      } else {
-        html += '<p>공통으로 좋아할 만한 행동이 적어요. 서로의 차이를 존중해보세요!</p>';
-      }
+      html += '<h3>🏞️ 추천 데이트 장소</h3><ul>';
+      places.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul>';
 
       resultDiv.innerHTML = html;
     }
