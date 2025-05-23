@@ -125,6 +125,47 @@
       ENTJ: ["프리미엄 펜", "고급 다이어리", "비즈니스 액세서리"]
     };
 
+    // 나의 MBTI와 상대방 MBTI 조합별로 "특히 내가 주의해야 할 점" (예시)
+    function getSpecialCaution(my, other) {
+      let tips = [];
+      // E/I 차이
+      if (my[0] === "E" && other[0] === "I") {
+        tips.push("상대방이 혼자만의 시간을 필요로 할 수 있으니 너무 자주 연락하거나 적극적으로 다가가는 것은 피하세요.");
+      }
+      if (my[0] === "I" && other[0] === "E") {
+        tips.push("상대방이 활발하게 소통할 때 피곤해하지 말고, 가끔은 먼저 연락을 시도해보세요.");
+      }
+      // S/N 차이
+      if (my[1] === "S" && other[1] === "N") {
+        tips.push("상대방의 상상력과 아이디어를 무시하지 말고, 열린 마음으로 들어주세요.");
+      }
+      if (my[1] === "N" && other[1] === "S") {
+        tips.push("상대방이 구체적인 현실 이야기를 좋아하니, 너무 추상적인 얘기는 줄여보세요.");
+      }
+      // T/F 차이
+      if (my[2] === "T" && other[2] === "F") {
+        tips.push("논리적인 설명보다는 감정에 공감해주는 태도를 보여주세요.");
+      }
+      if (my[2] === "F" && other[2] === "T") {
+        tips.push("상대방이 논리적으로 말할 때 감정적으로 받아들이지 않도록 주의하세요.");
+      }
+      // J/P 차이
+      if (my[3] === "J" && other[3] === "P") {
+        tips.push("계획을 강요하기보다는 상대방의 즉흥성도 존중해보세요.");
+      }
+      if (my[3] === "P" && other[3] === "J") {
+        tips.push("상대방이 계획을 세우는 걸 좋아하니, 약속이나 시간을 잘 지켜주세요.");
+      }
+      // 특수 조합 예시
+      const specialCases = {
+        "ENFP_INFJ": "즉흥적인 행동이 상대에게 부담이 될 수 있으니, 중요한 약속은 미리 상의하세요.",
+        "ISTJ_ESFP": "상대방의 자유로운 성향을 너무 통제하려 들지 마세요."
+      };
+      const caseKey = `${my}_${other}`;
+      if (specialCases[caseKey]) tips.push(specialCases[caseKey]);
+      return tips;
+    }
+
     function analyzeMBTI(my, other) {
       const like = [];
       const dislike = [];
@@ -213,6 +254,7 @@
       }
 
       const { like, dislike, place, gift } = analyzeMBTI(my, other);
+      const specialCautions = getSpecialCaution(my, other);
 
       let html = `<h2>${my} ❤️ ${other} 궁합 분석</h2>`;
       html += '<h3>😊 이런 걸 좋아해요</h3><ul>';
@@ -224,6 +266,11 @@
       html += '</ul><h3>🎁 선물을 한다면 이런 게 좋아요</h3><ul>';
       gift.forEach(item => html += `<li>${item}</li>`);
       html += '</ul>';
+      if (specialCautions.length > 0) {
+        html += '<h3>⚠️ 특히 내가 주의해야 할 점</h3><ul>';
+        specialCautions.forEach(item => html += `<li>${item}</li>`);
+        html += '</ul>';
+      }
       resultDiv.innerHTML = html;
     }
   </script>
