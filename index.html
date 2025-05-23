@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>커플 MBTI 분석 | 두 사람의 성향 유사도와 데이트 팁</title>
-  <meta name="description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소까지 한 번에 확인하세요!">
+  <title>커플 MBTI 분석 | 두 사람의 성향 케미와 데이트 팁</title>
+  <meta name="description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 케미, 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소와 선물까지 한 번에 확인하세요!">
   <!-- Open Graph -->
-  <meta property="og:title" content="커플 MBTI 분석 | 두 사람의 성향 궁합과 데이트 팁">
-  <meta property="og:description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 궁합, 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소까지 한 번에 확인하세요!">
+  <meta property="og:title" content="커플 MBTI 분석 | 두 사람의 성향 케미와 데이트 팁">
+  <meta property="og:description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 케미, 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소와 선물까지 한 번에 확인하세요!">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mbti-date.netlify.app/">
   <meta property="og:image" content="https://mbti-date.netlify.app/images/og-image.png">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="커플 MBTI 분석 | 두 사람의 성향 궁합과 데이트 팁">
-  <meta name="twitter:description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 궁합, 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소까지 한 번에 확인하세요!">
+  <meta name="twitter:title" content="커플 MBTI 분석 | 두 사람의 성향 케미와 데이트 팁">
+  <meta name="twitter:description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 케미, 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소와 선물까지 한 번에 확인하세요!">
   <meta name="twitter:image" content="https://mbti-date.netlify.app/images/og-image.png">
   <!-- 파비콘 -->
   <link rel="icon" href="/favicon.ico" />
@@ -51,7 +51,7 @@
 </head>
 <body>
   <h1>커플 MBTI 분석</h1>
-  <p>두 사람의 MBTI를 선택하면<br>유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소까지 한 번에!</p>
+  <p>두 사람의 MBTI를 선택하면<br>케미, 유사도, 상대방이 좋아하는 것, 내가 주의할 점, 추천 데이트 장소와 선물까지 한 번에!</p>
   
   <div>
     <select id="myMbti">
@@ -147,6 +147,26 @@
       'ENTJ': ['고급 레스토랑', '비즈니스 라운지', '컨퍼런스']
     };
 
+    // 선물 추천
+    const gift_examples = {
+      'ISTJ': ['실용적인 다이어리', '고급 펜', '클래식 시계'],
+      'ISFJ': ['따뜻한 머그컵', '손편지', '포근한 담요'],
+      'INFJ': ['감성적인 책', '아로마 캔들', '예쁜 노트'],
+      'INTJ': ['스마트워치', '프리미엄 노트북 파우치', '문구 세트'],
+      'ISTP': ['멀티툴', '스포츠 용품', 'DIY 키트'],
+      'ISFP': ['핸드메이드 소품', '아트 프린트', '향수'],
+      'INFP': ['감성 엽서 세트', '작은 화분', '일러스트 노트'],
+      'INTP': ['퍼즐', '과학 키트', '독특한 책'],
+      'ESTP': ['액티비티 체험권', '스포츠 티켓', '트렌디한 액세서리'],
+      'ESFP': ['화려한 액세서리', '음악 관련 굿즈', '파티 아이템'],
+      'ENFP': ['감성 포토북', '이색 체험권', '컬러풀한 소품'],
+      'ENTP': ['보드게임', '퀴즈북', '톡톡 튀는 문구'],
+      'ESTJ': ['고급 다이어리', '정장 넥타이', '비즈니스 가방'],
+      'ESFJ': ['플라워 박스', '베이킹 키트', '향초'],
+      'ENFJ': ['감사 카드', '의미 있는 책', '아트 클래스 이용권'],
+      'ENTJ': ['프리미엄 펜', '고급 다이어리', '비즈니스 액세서리']
+    };
+
     // 조합별 주의점 (나의 MBTI와 상대방 MBTI를 함께 고려)
     function getCautionByCombination(my, other) {
       const tips = [];
@@ -226,8 +246,11 @@
       // 4. 추천 데이트 장소
       const places = place_examples[other] || ['추천 장소가 없습니다'];
 
-      // 5. 결과 출력
-      let html = `<h2>${my} ❤️ ${other} 궁합 분석</h2>`;
+      // 5. 추천 선물
+      const gifts = gift_examples[other] || ['추천 선물이 없습니다'];
+
+      // 6. 결과 출력
+      let html = `<h2>${my} ❤️ ${other} 케미 분석</h2>`;
       html += `
         <h3>성향 유사도</h3>
         <div class="bar-wrap">
@@ -250,9 +273,12 @@
       places.forEach(item => html += `<li>${item}</li>`);
       html += '</ul>';
 
+      html += '<h3>🎁 상대방이 좋아하는 선물</h3><ul>';
+      gifts.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul>';
+
       resultDiv.innerHTML = html;
     }
   </script>
 </body>
 </html>
-
