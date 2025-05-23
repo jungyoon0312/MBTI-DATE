@@ -3,26 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MBTI 궁합 분석 앱</title>
+  <title>커플 MBTI 분석 | 두 사람의 성향 궁합과 데이트 팁</title>
+  <meta name="description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 궁합, 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소까지 한 번에 확인하세요!">
+  <!-- Open Graph -->
+  <meta property="og:title" content="커플 MBTI 분석 | 두 사람의 성향 궁합과 데이트 팁">
+  <meta property="og:description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 궁합, 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소까지 한 번에 확인하세요!">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mbti-date.netlify.app/">
+  <meta property="og:image" content="https://mbti-date.netlify.app/images/og-image.png">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="커플 MBTI 분석 | 두 사람의 성향 궁합과 데이트 팁">
+  <meta name="twitter:description" content="커플 MBTI 분석 앱에서 두 사람의 MBTI 궁합, 성향 유사도, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소까지 한 번에 확인하세요!">
+  <meta name="twitter:image" content="https://mbti-date.netlify.app/images/og-image.png">
+  <!-- 파비콘 -->
+  <link rel="icon" href="/favicon.ico" />
+  <!-- 폰트 및 CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Jua', Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; text-align: center; background: #fcfcfa; }
-    select, button { padding: 12px; font-size: 1.1rem; margin: 10px; border-radius: 8px; border: 2px solid #7e57c2; }
+    body { font-family: 'Jua', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; text-align: center; background: #fcfcfa; }
+    h1 { font-size: 2rem; margin-top: 32px; color: #7e57c2; }
+    select, button { padding: 12px; font-size: 1.1rem; margin: 10px 5px; border-radius: 8px; border: 2px solid #7e57c2; }
     .result { background: #f3e5f5; border-radius: 12px; padding: 20px; margin-top: 30px; text-align: left; }
-    h3 { color: #5e35b1; }
+    h3 { color: #5e35b1; margin-bottom: 8px; }
     ul { margin-bottom: 0; }
     .bar-container { background: #ede7f6; border-radius: 8px; margin: 24px 0 16px 0; height: 36px; width: 100%; max-width: 400px; display: flex; align-items: center; }
     .bar { background: #7e57c2; height: 100%; border-radius: 8px 0 0 8px; transition: width 0.7s; }
-    .score-label { position: absolute; font-size: 1.2rem; color: #222; font-weight: bold; margin-left: 10px; }
+    .score-label { position: absolute; font-size: 1.2rem; color: #222; font-weight: bold; margin-left: 10px; left: 80%; top: 7px; }
     .bar-wrap { position: relative; display: inline-block; width: 100%; }
-    .score-label { left: 80%; top: 7px; position: absolute; }
     @media (max-width: 600px) {
       .bar-container { max-width: 95vw; }
+      h1 { font-size: 1.3rem; }
+      .result { font-size: 1rem; }
+    }
+    .coupang-ad {
+      max-width: 320px;
+      margin: 32px auto 8px auto;
+      text-align: center;
+      padding: 0;
+    }
+    .coupang-ad .ad-desc {
+      margin-top: 4px;
+      color: #888;
+      font-size: 0.85rem;
     }
   </style>
 </head>
 <body>
-  <h1>🔮 MBTI 궁합 분석 앱</h1>
-  <p>나와 상대방의 MBTI를 선택하면<br>성향 유사도와 주요 포인트를 분석해드려요!</p>
+  <h1>커플 MBTI 분석</h1>
+  <p>두 사람의 MBTI를 선택하면<br>유사도, 궁합, 상대방이 좋아하는 것, 내가 주의해야 할 점, 추천 데이트 장소까지 한 번에!</p>
   
   <div>
     <select id="myMbti">
@@ -44,7 +73,6 @@
       <option value="ENFJ">ENFJ</option>
       <option value="ENTJ">ENTJ</option>
     </select>
-
     <select id="otherMbti">
       <option value="">상대방 MBTI</option>
       <option value="ISTJ">ISTJ</option>
@@ -68,6 +96,23 @@
   
   <button onclick="generateAdvice()">분석하기</button>
   <div class="result" id="result"></div>
+
+  <!-- 쿠팡 광고 (모바일 최적화 320x100) -->
+  <div class="coupang-ad">
+    <script src="https://ads-partners.coupang.com/g.js"></script>
+    <script>
+      new PartnersCoupang.G({
+        "id": 868644,
+        "template": "banner",
+        "trackingCode": "AF6707811",
+        "width": "320",
+        "height": "100"
+      });
+    </script>
+    <div class="ad-desc">
+      <small>이 링크를 통해 구매 시, 파트너스 활동을 통해 일정액의 수수료를 받을 수 있습니다.</small>
+    </div>
+  </div>
 
   <script>
     // 차원별 좋아하는 것
