@@ -9,6 +9,7 @@
     select, button { padding: 12px; font-size: 1.1rem; margin: 10px; border-radius: 8px; border: 2px solid #7e57c2; }
     .result { background: #f3e5f5; border-radius: 12px; padding: 20px; margin-top: 30px; text-align: left; }
     h3 { color: #5e35b1; }
+    ul { margin-bottom: 0; }
   </style>
 </head>
 <body>
@@ -36,102 +37,111 @@
       <option value="ENTJ">ENTJ</option>
     </select>
 
-<select id="otherMbti">
-  <option value="">상대방 MBTI</option>
-  <option value="ISTJ">ISTJ</option>
-  <option value="ISFJ">ISFJ</option>
-  <option value="INFJ">INFJ</option>
-  <option value="INTJ">INTJ</option>
-  <option value="ISTP">ISTP</option>
-  <option value="ISFP">ISFP</option>
-  <option value="INFP">INFP</option>
-  <option value="INTP">INTP</option>
-  <option value="ESTP">ESTP</option>
-  <option value="ESFP">ESFP</option>
-  <option value="ENFP">ENFP</option>
-  <option value="ENTP">ENTP</option>
-  <option value="ESTJ">ESTJ</option>
-  <option value="ESFJ">ESFJ</option>
-  <option value="ENFJ">ENFJ</option>
-  <option value="ENTJ">ENTJ</option>
-</select>
+    <select id="otherMbti">
+      <option value="">상대방 MBTI</option>
+      <option value="ISTJ">ISTJ</option>
+      <option value="ISFJ">ISFJ</option>
+      <option value="INFJ">INFJ</option>
+      <option value="INTJ">INTJ</option>
+      <option value="ISTP">ISTP</option>
+      <option value="ISFP">ISFP</option>
+      <option value="INFP">INFP</option>
+      <option value="INTP">INTP</option>
+      <option value="ESTP">ESTP</option>
+      <option value="ESFP">ESFP</option>
+      <option value="ENFP">ENFP</option>
+      <option value="ENTP">ENTP</option>
+      <option value="ESTJ">ESTJ</option>
+      <option value="ESFJ">ESFJ</option>
+      <option value="ENFJ">ENFJ</option>
+      <option value="ENTJ">ENTJ</option>
+    </select>
   </div>
   
   <button onclick="generateAdvice()">조언 생성하기</button>
   <div class="result" id="result"></div>
 
   <script>
+    // MBTI 차원별 좋아하는/싫어하는 행동 예시
+    const likeExamples = {
+      E: ["함께 어울리는 활동", "적극적으로 먼저 연락하기", "즉각적인 반응"],
+      I: ["조용한 분위기에서 대화", "혼자만의 시간 존중", "생각할 시간 주기"],
+      S: ["구체적인 칭찬", "실생활 이야기", "약속 잘 지키기"],
+      N: ["미래에 대한 이야기", "아이디어 나누기", "상상력 자극하는 대화"],
+      T: ["논리적으로 설명하기", "솔직한 피드백", "문제 해결 제안"],
+      F: ["공감해주기", "감정 표현하기", "따뜻한 말 한마디"],
+      J: ["계획 세우기", "정해진 약속 지키기", "시간 약속"],
+      P: ["즉흥적인 제안", "유연한 태도", "새로운 경험 시도"]
+    };
+
+    const dislikeExamples = {
+      E: ["혼자만의 시간 방해", "무관심한 태도", "답장 늦게 하기"],
+      I: ["지나친 관심 표현", "계속된 연락", "사생활 침해"],
+      S: ["막연한 이야기", "계획 없는 행동", "약속 어기기"],
+      N: ["지나치게 현실적인 이야기", "상상력 무시", "새로운 시도 거부"],
+      T: ["감정적으로 따지기", "비논리적 주장", "돌려 말하기"],
+      F: ["무뚝뚝한 말투", "공감 없는 반응", "비판적인 태도"],
+      J: ["계획 없는 행동", "즉흥적인 약속", "일정 자주 변경"],
+      P: ["지나치게 통제하기", "계획 강요", "즉흥성 무시"]
+    };
+
     function analyzeMBTI(my, other) {
-      const advice = { approach: [], caution: [] };
-      
-      // 1. 에너지 방향 (E/I)
-      if (my[0] !== other[0]) {
-        advice.approach.push(
-          `${my[0] === 'E' ? '당신이 적극적인 편이니' : '상대가 적극적인 편이니'} 
-          ${my[0] === 'E' ? '상대의 침묵을 존중해주세요' : '먼저 연락을 시도해보세요'}`
-        );
-        advice.caution.push(
-          `${my[0] === 'E' ? '과한 접근' : '소극적인 태도'}가 
-          ${my[0] === 'E' ? '부담으로 작용할 수 있어요' : '오해를 살 수 있어요'}`
-        );
+      const like = [];
+      const dislike = [];
+
+      // E/I
+      if (other[0] === "E") {
+        like.push(likeExamples.E[0]);
+        like.push(likeExamples.E[1]);
+        dislike.push(dislikeExamples.E[0]);
+      } else {
+        like.push(likeExamples.I[0]);
+        like.push(likeExamples.I[1]);
+        dislike.push(dislikeExamples.I[0]);
+      }
+      // S/N
+      if (other[1] === "S") {
+        like.push(likeExamples.S[0]);
+        dislike.push(dislikeExamples.S[0]);
+      } else {
+        like.push(likeExamples.N[0]);
+        dislike.push(dislikeExamples.N[0]);
+      }
+      // T/F
+      if (other[2] === "T") {
+        like.push(likeExamples.T[0]);
+        dislike.push(dislikeExamples.T[0]);
+      } else {
+        like.push(likeExamples.F[0]);
+        dislike.push(dislikeExamples.F[0]);
+      }
+      // J/P
+      if (other[3] === "J") {
+        like.push(likeExamples.J[0]);
+        dislike.push(dislikeExamples.J[0]);
+      } else {
+        like.push(likeExamples.P[0]);
+        dislike.push(dislikeExamples.P[0]);
       }
 
-      // 2. 인식 기능 (S/N)
-      if (my[1] !== other[1]) {
-        advice.approach.push(
-          `상대는 ${other[1] === 'S' ? '구체적인 사실' : '추상적인 아이디어'}를 좋아하니 
-          ${other[1] === 'S' ? '실생활 이야기를 나눠보세요' : '이론적 대화를 시도해보세요'}`
-        );
-        advice.caution.push(
-          `${my[1] === 'S' ? '너무 현실적인 발언' : '너무 추상적인 발언'}이 
-          ${other[1] === 'S' ? '지루하게 느껴질 수 있어요' : '허황되게 보일 수 있어요'}`
-        );
-      }
-
-      // 3. 판단 기능 (T/F)
-      if (my[2] !== other[2]) {
-        advice.approach.push(
-          `상대가 ${other[2] === 'T' ? '논리적 판단' : '감정적 공감'}을 중요시하니 
-          ${other[2] === 'T' ? '이유를 명확히 설명해주세요' : '감정을 먼저 인정해주세요'}`
-        );
-        advice.caution.push(
-          `${my[2] === 'T' ? '직설적인 표현' : '감정적인 반응'}이 
-          ${other[2] === 'T' ? '무심해 보일 수 있어요' : '과잉반응으로 보일 수 있어요'}`
-        );
-      }
-
-      // 4. 생활 방식 (J/P)
-      if (my[3] !== other[3]) {
-        advice.approach.push(
-          `상대는 ${other[3] === 'J' ? '계획을 선호' : '유연함을 원하니'} 
-          ${other[3] === 'J' ? '약속을 꼭 지켜주세요' : '즉흥적인 제안을 해보세요'}`
-        );
-        advice.caution.push(
-          `${my[3] === 'J' ? '강요하는 태도' : '무계획적인 모습'}이 
-          ${other[3] === 'J' ? '통제적으로 보일 수 있어요' : '무책임해 보일 수 있어요'}`
-        );
-      }
-
-      // 특별한 조합 예외 처리
+      // 특수 조합 예시 (더 추가 가능)
       const specialCases = {
         'ENFP_INFJ': {
-          approach: ['깊은 대화와 감성적 연결을 시도해보세요', '상대의 독창성을 칭찬해주세요'],
-          caution: ['지나친 즉흥성은 피하는 게 좋아요']
+          like: ["깊은 감성 대화", "상대의 독창성을 칭찬하는 말"],
+          dislike: ["즉흥적인 약속 변경", "감정 무시"]
         },
         'ISTJ_ESFP': {
-          approach: ['함께 액티비티를 즐기세요', '상대의 열정을 존중해주세요'],
-          caution: ['너무 심각한 태도를 보이지 마세요']
+          like: ["함께 액티비티 즐기기", "상대의 열정에 공감"],
+          dislike: ["지나치게 심각한 태도"]
         }
-        // 더 많은 특수 케이스 추가 가능
       };
-
       const caseKey = `${my}_${other}`;
       if (specialCases[caseKey]) {
-        advice.approach = [...advice.approach, ...specialCases[caseKey].approach];
-        advice.caution = [...advice.caution, ...specialCases[caseKey].caution];
+        like.push(...specialCases[caseKey].like);
+        dislike.push(...specialCases[caseKey].dislike);
       }
 
-      return advice;
+      return { like, dislike };
     }
 
     function generateAdvice() {
@@ -144,19 +154,17 @@
         return;
       }
 
-      const { approach, caution } = analyzeMBTI(my, other);
-      
-      let html = `<h2>${my} ❤️ ${other} 관계 분석</h2>`;
-      
-      html += '<h3>🚀 이렇게 다가가세요</h3><ul>';
-      approach.forEach(tip => html += `<li>${tip}</li>`);
-      
-      html += '</ul><h3>⚠️ 주의할 점</h3><ul>';
-      caution.forEach(tip => html += `<li>${tip}</li>`);
-      
+      const { like, dislike } = analyzeMBTI(my, other);
+
+      let html = `<h2>${my} ❤️ ${other} 궁합 분석</h2>`;
+      html += '<h3>😊 이런 걸 좋아해요</h3><ul>';
+      like.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul><h3>😕 이런 건 싫어해요</h3><ul>';
+      dislike.forEach(item => html += `<li>${item}</li>`);
       html += '</ul>';
       resultDiv.innerHTML = html;
     }
   </script>
 </body>
 </html>
+
