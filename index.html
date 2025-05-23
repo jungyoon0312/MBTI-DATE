@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBTI 궁합 조언 앱</title>
+  <style>
+    body { font-family: 'Jua', Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; text-align: center; }
+    select, button { padding: 12px; font-size: 1.1rem; margin: 10px; border-radius: 8px; border: 2px solid #7e57c2; }
+    .result { background: #f3e5f5; border-radius: 12px; padding: 20px; margin-top: 30px; text-align: left; }
+    h3 { color: #5e35b1; }
+  </style>
+</head>
+<body>
+  <h1>🔮 MBTI 궁합 조언 앱</h1>
+  <p>나와 상대방의 MBTI를 선택하면<br>관계 발전을 위한 맞춤 팁을 알려드려요!</p>
+  
+  <div>
+    <select id="myMbti">
+      <option value="">나의 MBTI</option>
+      <option value="ISTJ">ISTJ</option>
+      <option value="ISFJ">ISFJ</option>
+      <option value="INFJ">INFJ</option>
+      <option value="INTJ">INTJ</option>
+      <option value="ISTP">ISTP</option>
+      <option value="ISFP">ISFP</option>
+      <option value="INFP">INFP</option>
+      <option value="INTP">INTP</option>
+      <option value="ESTP">ESTP</option>
+      <option value="ESFP">ESFP</option>
+      <option value="ENFP">ENFP</option>
+      <option value="ENTP">ENTP</option>
+      <option value="ESTJ">ESTJ</option>
+      <option value="ESFJ">ESFJ</option>
+      <option value="ENFJ">ENFJ</option>
+      <option value="ENTJ">ENTJ</option>
+    </select>
+
+    <select id="otherMbti">
+      <option value="">상대방 MBTI</option>
+      <option value="ISTJ">ISTJ</option>
+      <option value="ISFJ">ISFJ</option>
+      <!-- ...위와 동일하게 16개 옵션 추가 -->
+    </select>
+  </div>
+  
+  <button onclick="generateAdvice()">조언 생성하기</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    function analyzeMBTI(my, other) {
+      const advice = { approach: [], caution: [] };
+      
+      // 1. 에너지 방향 (E/I)
+      if (my[0] !== other[0]) {
+        advice.approach.push(
+          `${my[0] === 'E' ? '당신이 적극적인 편이니' : '상대가 적극적인 편이니'} 
+          ${my[0] === 'E' ? '상대의 침묵을 존중해주세요' : '먼저 연락을 시도해보세요'}`
+        );
+        advice.caution.push(
+          `${my[0] === 'E' ? '과한 접근' : '소극적인 태도'}가 
+          ${my[0] === 'E' ? '부담으로 작용할 수 있어요' : '오해를 살 수 있어요'}`
+        );
+      }
+
+      // 2. 인식 기능 (S/N)
+      if (my[1] !== other[1]) {
+        advice.approach.push(
+          `상대는 ${other[1] === 'S' ? '구체적인 사실' : '추상적인 아이디어'}를 좋아하니 
+          ${other[1] === 'S' ? '실생활 이야기를 나눠보세요' : '이론적 대화를 시도해보세요'}`
+        );
+        advice.caution.push(
+          `${my[1] === 'S' ? '너무 현실적인 발언' : '너무 추상적인 발언'}이 
+          ${other[1] === 'S' ? '지루하게 느껴질 수 있어요' : '허황되게 보일 수 있어요'}`
+        );
+      }
+
+      // 3. 판단 기능 (T/F)
+      if (my[2] !== other[2]) {
+        advice.approach.push(
+          `상대가 ${other[2] === 'T' ? '논리적 판단' : '감정적 공감'}을 중요시하니 
+          ${other[2] === 'T' ? '이유를 명확히 설명해주세요' : '감정을 먼저 인정해주세요'}`
+        );
+        advice.caution.push(
+          `${my[2] === 'T' ? '직설적인 표현' : '감정적인 반응'}이 
+          ${other[2] === 'T' ? '무심해 보일 수 있어요' : '과잉반응으로 보일 수 있어요'}`
+        );
+      }
+
+      // 4. 생활 방식 (J/P)
+      if (my[3] !== other[3]) {
+        advice.approach.push(
+          `상대는 ${other[3] === 'J' ? '계획을 선호' : '유연함을 원하니'} 
+          ${other[3] === 'J' ? '약속을 꼭 지켜주세요' : '즉흥적인 제안을 해보세요'}`
+        );
+        advice.caution.push(
+          `${my[3] === 'J' ? '강요하는 태도' : '무계획적인 모습'}이 
+          ${other[3] === 'J' ? '통제적으로 보일 수 있어요' : '무책임해 보일 수 있어요'}`
+        );
+      }
+
+      // 특별한 조합 예외 처리
+      const specialCases = {
+        'ENFP_INFJ': {
+          approach: ['깊은 대화와 감성적 연결을 시도해보세요', '상대의 독창성을 칭찬해주세요'],
+          caution: ['지나친 즉흥성은 피하는 게 좋아요']
+        },
+        'ISTJ_ESFP': {
+          approach: ['함께 액티비티를 즐기세요', '상대의 열정을 존중해주세요'],
+          caution: ['너무 심각한 태도를 보이지 마세요']
+        }
+        // 더 많은 특수 케이스 추가 가능
+      };
+
+      const caseKey = `${my}_${other}`;
+      if (specialCases[caseKey]) {
+        advice.approach = [...advice.approach, ...specialCases[caseKey].approach];
+        advice.caution = [...advice.caution, ...specialCases[caseKey].caution];
+      }
+
+      return advice;
+    }
+
+    function generateAdvice() {
+      const my = document.getElementById('myMbti').value;
+      const other = document.getElementById('otherMbti').value;
+      const resultDiv = document.getElementById('result');
+
+      if (!my || !other) {
+        resultDiv.innerHTML = '<h3>⚠️ 두 MBTI를 모두 선택해주세요!</h3>';
+        return;
+      }
+
+      const { approach, caution } = analyzeMBTI(my, other);
+      
+      let html = `<h2>${my} ❤️ ${other} 관계 분석</h2>`;
+      
+      html += '<h3>🚀 이렇게 다가가세요</h3><ul>';
+      approach.forEach(tip => html += `<li>${tip}</li>`);
+      
+      html += '</ul><h3>⚠️ 주의할 점</h3><ul>';
+      caution.forEach(tip => html += `<li>${tip}</li>`);
+      
+      html += '</ul>';
+      resultDiv.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
