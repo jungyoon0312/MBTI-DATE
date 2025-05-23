@@ -1,20 +1,231 @@
-<select id="otherMbti">
-  <option value="">상대방 MBTI</option>
-  <option value="ISTJ">ISTJ</option>
-  <option value="ISFJ">ISFJ</option>
-  <option value="INFJ">INFJ</option>
-  <option value="INTJ">INTJ</option>
-  <option value="ISTP">ISTP</option>
-  <option value="ISFP">ISFP</option>
-  <option value="INFP">INFP</option>
-  <option value="INTP">INTP</option>
-  <option value="ESTP">ESTP</option>
-  <option value="ESFP">ESFP</option>
-  <option value="ENFP">ENFP</option>
-  <option value="ENTP">ENTP</option>
-  <option value="ESTJ">ESTJ</option>
-  <option value="ESFJ">ESFJ</option>
-  <option value="ENFJ">ENFJ</option>
-  <option value="ENTJ">ENTJ</option>
-</select>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBTI 궁합 조언 앱</title>
+  <style>
+    body { font-family: 'Jua', Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; text-align: center; }
+    select, button { padding: 12px; font-size: 1.1rem; margin: 10px; border-radius: 8px; border: 2px solid #7e57c2; }
+    .result { background: #f3e5f5; border-radius: 12px; padding: 20px; margin-top: 30px; text-align: left; }
+    h3 { color: #5e35b1; }
+    ul { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+  <h1>🔮 MBTI 궁합 조언 앱</h1>
+  <p>나와 상대방의 MBTI를 선택하면<br>관계 발전을 위한 맞춤 팁을 알려드려요!</p>
+  
+  <div>
+    <select id="myMbti">
+      <option value="">나의 MBTI</option>
+      <option value="ISTJ">ISTJ</option>
+      <option value="ISFJ">ISFJ</option>
+      <option value="INFJ">INFJ</option>
+      <option value="INTJ">INTJ</option>
+      <option value="ISTP">ISTP</option>
+      <option value="ISFP">ISFP</option>
+      <option value="INFP">INFP</option>
+      <option value="INTP">INTP</option>
+      <option value="ESTP">ESTP</option>
+      <option value="ESFP">ESFP</option>
+      <option value="ENFP">ENFP</option>
+      <option value="ENTP">ENTP</option>
+      <option value="ESTJ">ESTJ</option>
+      <option value="ESFJ">ESFJ</option>
+      <option value="ENFJ">ENFJ</option>
+      <option value="ENTJ">ENTJ</option>
+    </select>
 
+    <select id="otherMbti">
+      <option value="">상대방 MBTI</option>
+      <option value="ISTJ">ISTJ</option>
+      <option value="ISFJ">ISFJ</option>
+      <option value="INFJ">INFJ</option>
+      <option value="INTJ">INTJ</option>
+      <option value="ISTP">ISTP</option>
+      <option value="ISFP">ISFP</option>
+      <option value="INFP">INFP</option>
+      <option value="INTP">INTP</option>
+      <option value="ESTP">ESTP</option>
+      <option value="ESFP">ESFP</option>
+      <option value="ENFP">ENFP</option>
+      <option value="ENTP">ENTP</option>
+      <option value="ESTJ">ESTJ</option>
+      <option value="ESFJ">ESFJ</option>
+      <option value="ENFJ">ENFJ</option>
+      <option value="ENTJ">ENTJ</option>
+    </select>
+  </div>
+  
+  <button onclick="generateAdvice()">조언 생성하기</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    // MBTI 차원별 좋아하는/싫어하는 행동 예시
+    const likeExamples = {
+      E: ["함께 어울리는 활동", "적극적으로 먼저 연락하기", "즉각적인 반응"],
+      I: ["조용한 분위기에서 대화", "혼자만의 시간 존중", "생각할 시간 주기"],
+      S: ["구체적인 칭찬", "실생활 이야기", "약속 잘 지키기"],
+      N: ["미래에 대한 이야기", "아이디어 나누기", "상상력 자극하는 대화"],
+      T: ["논리적으로 설명하기", "솔직한 피드백", "문제 해결 제안"],
+      F: ["공감해주기", "감정 표현하기", "따뜻한 말 한마디"],
+      J: ["계획 세우기", "정해진 약속 지키기", "시간 약속"],
+      P: ["즉흥적인 제안", "유연한 태도", "새로운 경험 시도"]
+    };
+
+    const dislikeExamples = {
+      E: ["혼자만의 시간 방해", "무관심한 태도", "답장 늦게 하기"],
+      I: ["지나친 관심 표현", "계속된 연락", "사생활 침해"],
+      S: ["막연한 이야기", "계획 없는 행동", "약속 어기기"],
+      N: ["지나치게 현실적인 이야기", "상상력 무시", "새로운 시도 거부"],
+      T: ["감정적으로 따지기", "비논리적 주장", "돌려 말하기"],
+      F: ["무뚝뚝한 말투", "공감 없는 반응", "비판적인 태도"],
+      J: ["계획 없는 행동", "즉흥적인 약속", "일정 자주 변경"],
+      P: ["지나치게 통제하기", "계획 강요", "즉흥성 무시"]
+    };
+
+    // MBTI별 추천 장소 예시
+    const placeExamples = {
+      ISTJ: ["조용한 카페", "고즈넉한 공원", "전시회"],
+      ISFJ: ["아늑한 레스토랑", "산책길", "작은 영화관"],
+      INFJ: ["북카페", "미술관", "자연 속 산책"],
+      INTJ: ["조용한 서점", "전시회", "프라이빗 다이닝룸"],
+      ISTP: ["보드게임 카페", "스포츠 경기장", "DIY 체험장"],
+      ISFP: ["자연 경관 좋은 곳", "공예 체험", "갤러리"],
+      INFP: ["테마가 있는 카페", "작은 공연장", "야외 피크닉"],
+      INTP: ["북카페", "과학관", "전시회"],
+      ESTP: ["액티비티 체험", "실내 스포츠", "테마파크"],
+      ESFP: ["라이브 카페", "놀이공원", "음악 페스티벌"],
+      ENFP: ["이색 카페", "플리마켓", "거리 공연"],
+      ENTP: ["토론 모임", "퀴즈카페", "방탈출 카페"],
+      ESTJ: ["깔끔한 레스토랑", "전통시장 투어", "클래식 공연"],
+      ESFJ: ["분위기 좋은 레스토랑", "카페 데이트", "도심 산책"],
+      ENFJ: ["봉사활동", "문화 행사", "아트 클래스"],
+      ENTJ: ["고급 레스토랑", "비즈니스 라운지", "컨퍼런스"]
+    };
+
+    // MBTI별 추천 선물 예시
+    const giftExamples = {
+      ISTJ: ["실용적인 다이어리", "고급 펜", "클래식 시계"],
+      ISFJ: ["따뜻한 머그컵", "손편지", "포근한 담요"],
+      INFJ: ["감성적인 책", "아로마 캔들", "예쁜 노트"],
+      INTJ: ["스마트워치", "프리미엄 노트북 파우치", "문구 세트"],
+      ISTP: ["멀티툴", "스포츠 용품", "DIY 키트"],
+      ISFP: ["핸드메이드 소품", "아트 프린트", "향수"],
+      INFP: ["감성 엽서 세트", "작은 화분", "일러스트 노트"],
+      INTP: ["퍼즐", "과학 키트", "독특한 책"],
+      ESTP: ["액티비티 체험권", "스포츠 티켓", "트렌디한 액세서리"],
+      ESFP: ["화려한 액세서리", "음악 관련 굿즈", "파티 아이템"],
+      ENFP: ["감성 포토북", "이색 체험권", "컬러풀한 소품"],
+      ENTP: ["보드게임", "퀴즈북", "톡톡 튀는 문구"],
+      ESTJ: ["고급 다이어리", "정장 넥타이", "비즈니스 가방"],
+      ESFJ: ["플라워 박스", "베이킹 키트", "향초"],
+      ENFJ: ["감사 카드", "의미 있는 책", "아트 클래스 이용권"],
+      ENTJ: ["프리미엄 펜", "고급 다이어리", "비즈니스 액세서리"]
+    };
+
+    function analyzeMBTI(my, other) {
+      const like = [];
+      const dislike = [];
+      const place = [];
+      const gift = [];
+
+      // E/I
+      if (other[0] === "E") {
+        like.push(likeExamples.E[0]);
+        like.push(likeExamples.E[1]);
+        dislike.push(dislikeExamples.E[0]);
+      } else {
+        like.push(likeExamples.I[0]);
+        like.push(likeExamples.I[1]);
+        dislike.push(dislikeExamples.I[0]);
+      }
+      // S/N
+      if (other[1] === "S") {
+        like.push(likeExamples.S[0]);
+        dislike.push(dislikeExamples.S[0]);
+      } else {
+        like.push(likeExamples.N[0]);
+        dislike.push(dislikeExamples.N[0]);
+      }
+      // T/F
+      if (other[2] === "T") {
+        like.push(likeExamples.T[0]);
+        dislike.push(dislikeExamples.T[0]);
+      } else {
+        like.push(likeExamples.F[0]);
+        dislike.push(dislikeExamples.F[0]);
+      }
+      // J/P
+      if (other[3] === "J") {
+        like.push(likeExamples.J[0]);
+        dislike.push(dislikeExamples.J[0]);
+      } else {
+        like.push(likeExamples.P[0]);
+        dislike.push(dislikeExamples.P[0]);
+      }
+
+      // 추천 장소
+      if (placeExamples[other]) {
+        place.push(...placeExamples[other]);
+      }
+
+      // 추천 선물
+      if (giftExamples[other]) {
+        gift.push(...giftExamples[other]);
+      }
+
+      // 특수 조합 예시 (더 추가 가능)
+      const specialCases = {
+        'ENFP_INFJ': {
+          like: ["깊은 감성 대화", "상대의 독창성을 칭찬하는 말"],
+          dislike: ["즉흥적인 약속 변경", "감정 무시"],
+          place: ["테마 카페", "조용한 공원"],
+          gift: ["감성 포토북", "아로마 캔들"]
+        },
+        'ISTJ_ESFP': {
+          like: ["함께 액티비티 즐기기", "상대의 열정에 공감"],
+          dislike: ["지나치게 심각한 태도"],
+          place: ["놀이공원", "보드게임 카페"],
+          gift: ["스포츠 티켓", "화려한 액세서리"]
+        }
+      };
+      const caseKey = `${my}_${other}`;
+      if (specialCases[caseKey]) {
+        if (specialCases[caseKey].like) like.push(...specialCases[caseKey].like);
+        if (specialCases[caseKey].dislike) dislike.push(...specialCases[caseKey].dislike);
+        if (specialCases[caseKey].place) place.push(...specialCases[caseKey].place);
+        if (specialCases[caseKey].gift) gift.push(...specialCases[caseKey].gift);
+      }
+
+      return { like, dislike, place, gift };
+    }
+
+    function generateAdvice() {
+      const my = document.getElementById('myMbti').value;
+      const other = document.getElementById('otherMbti').value;
+      const resultDiv = document.getElementById('result');
+
+      if (!my || !other) {
+        resultDiv.innerHTML = '<h3>⚠️ 두 MBTI를 모두 선택해주세요!</h3>';
+        return;
+      }
+
+      const { like, dislike, place, gift } = analyzeMBTI(my, other);
+
+      let html = `<h2>${my} ❤️ ${other} 궁합 분석</h2>`;
+      html += '<h3>😊 이런 걸 좋아해요</h3><ul>';
+      like.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul><h3>😕 이런 건 싫어해요</h3><ul>';
+      dislike.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul><h3>🏞️ 이런 곳을 추천해요</h3><ul>';
+      place.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul><h3>🎁 선물을 한다면 이런 게 좋아요</h3><ul>';
+      gift.forEach(item => html += `<li>${item}</li>`);
+      html += '</ul>';
+      resultDiv.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
